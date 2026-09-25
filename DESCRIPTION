@@ -1,0 +1,33 @@
+Package: lillardhaz
+Type: Package
+Title: Simultaneous-Equations Hazard/Probit Models with a Gaussian-Copula Correlation
+Version: 1.0.0
+Date: 2026-09-25
+Authors@R: person("Nobutaka", "Fukuda", email = "nobutaka.fukuda@tohoku.ac.jp",
+    role = c("aut", "cre"))
+Description: Fits two-equation simultaneous models in the style of
+    Lillard (1993) <doi:10.1016/0304-4076(93)90105-5>: a pair of processes,
+    each either a binary probit outcome or a continuous-time hazard
+    duration, linked through a single correlation parameter between their
+    underlying error terms and estimated jointly by maximum likelihood via
+    a Gaussian copula. Equation 1 may be a probit, a log-normal
+    accelerated-failure-time hazard, or a piecewise (linear-log-hazard)
+    Gompertz hazard with an arbitrary, user-specified number of segments;
+    equation 2 is always a hazard, log-normal or piecewise Gompertz. Models
+    can also be fit under independence (correlation fixed at zero), which
+    reduces exactly to two separate univariate fits. See the package
+    vignette/manual for the full likelihood derivation and a
+    simulation-based verification.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 3.5)
+Imports:
+    maxLik,
+    pbivnorm,
+    stats
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/nobifukuda/lillardhaz
+BugReports: https://github.com/nobifukuda/lillardhaz/issues
+Config/roxygen2/version: 8.0.0

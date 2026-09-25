@@ -6,7 +6,7 @@ Date: 2026-09-25
 Authors@R: person("Nobutaka", "Fukuda", email = "nobutaka.fukuda@tohoku.ac.jp",
     role = c("aut", "cre"))
 Description: Fits two-equation simultaneous models in the style of
-    Lillard (1993) <doi:10.1016/0304-4076(93)90105-5>: a pair of processes,
+    Lillard (1993) <doi:10.1016/0304-4076(93)90106-F>: a pair of processes,
     each either a binary probit outcome or a continuous-time hazard
     duration, linked through a single correlation parameter between their
     underlying error terms and estimated jointly by maximum likelihood via

@@ -17,6 +17,28 @@
 
 \item{...}{unused.}
 }
+\value{
+A numeric vector with one element per row of \code{newdata},
+  evaluated at the estimated coefficients. Its meaning depends on
+  \code{type}:
+  \describe{
+    \item{\code{"xb1"}, \code{"xb2"}}{the linear location index
+      \eqn{x'\beta} of equation 1 or 2 (for a log-normal equation, the
+      mean of log duration; for a piecewise-Gompertz equation, the log of
+      the proportional hazard shift).}
+    \item{\code{"pr1"}}{the predicted probability that the binary
+      outcome of equation 1 equals 1, \eqn{\Phi(x'\beta)}; only
+      available when \code{eq1 = "probit"}.}
+    \item{\code{"surv1"}, \code{"surv2"}}{the marginal survival
+      probability \eqn{S(t)}, a value in [0, 1], of equation 1 or 2
+      evaluated at the observed duration in \code{newdata} (variable
+      \code{y1} or \code{y2} used in the fit).}
+    \item{\code{"dens1"}, \code{"dens2"}}{the marginal density
+      \eqn{f(t)} of equation 1 or 2 evaluated at that duration.}
+  }
+  The survival and density predictions are marginal (per equation) and
+  do not condition on the other equation's outcome.
+}
 \description{
 Predicted survival/density/index from a fitted lillardhaz model
 }

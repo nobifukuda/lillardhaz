@@ -57,7 +57,27 @@ reduces exactly to two separate univariate fits).}
 \item{method}{optimization method passed to \code{maxLik::maxLik}.}
 }
 \value{
-An object of class \code{"lillardhaz"}.
+An object of class \code{"lillardhaz"}: a list with components
+  \describe{
+    \item{\code{coefficients}}{named numeric vector of maximum-likelihood
+      estimates (equation 1 and 2 location coefficients, ancillary
+      parameters such as \code{ln_sigma} or piecewise-Gompertz slopes, and
+      \code{atanh_rho} if \code{corr = TRUE}).}
+    \item{\code{se}}{standard errors from the inverse negative Hessian
+      (\code{NA} if the Hessian is singular).}
+    \item{\code{loglik}}{maximized log-likelihood.}
+    \item{\code{rho}, \code{rho_se}}{estimated copula correlation between
+      the two equations' error terms and its delta-method standard error
+      (\code{0} and \code{NA} when \code{corr = FALSE}).}
+    \item{\code{fit}}{the underlying \code{maxLik} object.}
+    \item{\code{eq1type}, \code{eq2type}, \code{nodes1}, \code{nodes2},
+      \code{corr}, \code{x1}, \code{x2}, \code{y1name}, \code{y2name}}{the
+      model specification.}
+    \item{\code{n}}{number of observations.}
+    \item{\code{call}}{the matched call.}
+  }
+  Methods for \code{print}, \code{summary} and \code{predict} are
+  available.
 }
 \description{
 Fits a two-equation simultaneous model in the style of Lillard (1993): a
@@ -83,4 +103,5 @@ fit <- fit_lillardhaz("lognormal", "lognormal", d,
                        y1 = "time1", d1 = "event1", y2 = "time2", d2 = "event2",
                        x1 = "x1", x2 = "x2")
 summary(fit)
+head(predict(fit, type = "surv2"))
 }

@@ -218,7 +218,27 @@ NULL
 #' @param start optional named numeric vector of starting values.
 #' @param method optimization method passed to \code{maxLik::maxLik}.
 #'
-#' @return An object of class \code{"lillardhaz"}.
+#' @return An object of class \code{"lillardhaz"}: a list with components
+#'   \describe{
+#'     \item{\code{coefficients}}{named numeric vector of maximum-likelihood
+#'       estimates (equation 1 and 2 location coefficients, ancillary
+#'       parameters such as \code{ln_sigma} or piecewise-Gompertz slopes, and
+#'       \code{atanh_rho} if \code{corr = TRUE}).}
+#'     \item{\code{se}}{standard errors from the inverse negative Hessian
+#'       (\code{NA} if the Hessian is singular).}
+#'     \item{\code{loglik}}{maximized log-likelihood.}
+#'     \item{\code{rho}, \code{rho_se}}{estimated copula correlation between
+#'       the two equations' error terms and its delta-method standard error
+#'       (\code{0} and \code{NA} when \code{corr = FALSE}).}
+#'     \item{\code{fit}}{the underlying \code{maxLik} object.}
+#'     \item{\code{eq1type}, \code{eq2type}, \code{nodes1}, \code{nodes2},
+#'       \code{corr}, \code{x1}, \code{x2}, \code{y1name}, \code{y2name}}{the
+#'       model specification.}
+#'     \item{\code{n}}{number of observations.}
+#'     \item{\code{call}}{the matched call.}
+#'   }
+#'   Methods for \code{print}, \code{summary} and \code{predict} are
+#'   available.
 #' @examples
 #' set.seed(1)
 #' n <- 2000
@@ -236,6 +256,7 @@ NULL
 #'                        y1 = "time1", d1 = "event1", y2 = "time2", d2 = "event2",
 #'                        x1 = "x1", x2 = "x2")
 #' summary(fit)
+#' head(predict(fit, type = "surv2"))
 #' @export
 fit_lillardhaz <- function(eq1, eq2, data, y1, d1 = NULL, y2, d2,
                             x1 = character(0), x2 = character(0),
@@ -342,9 +363,33 @@ print.summary.lillardhaz <- function(x, ...) {
 #' @param type one of \code{"surv2"} (default), \code{"surv1"}, \code{"dens1"},
 #'   \code{"dens2"}, \code{"pr1"}, \code{"xb1"}, \code{"xb2"}.
 #' @param ... unused.
+#'
+#' @return A numeric vector with one element per row of \code{newdata},
+#'   evaluated at the estimated coefficients. Its meaning depends on
+#'   \code{type}:
+#'   \describe{
+#'     \item{\code{"xb1"}, \code{"xb2"}}{the linear location index
+#'       \eqn{x'\beta} of equation 1 or 2 (for a log-normal equation, the
+#'       mean of log duration; for a piecewise-Gompertz equation, the log of
+#'       the proportional hazard shift).}
+#'     \item{\code{"pr1"}}{the predicted probability that the binary
+#'       outcome of equation 1 equals 1, \eqn{\Phi(x'\beta)}; only
+#'       available when \code{eq1 = "probit"}.}
+#'     \item{\code{"surv1"}, \code{"surv2"}}{the marginal survival
+#'       probability \eqn{S(t)}, a value in [0, 1], of equation 1 or 2
+#'       evaluated at the observed duration in \code{newdata} (variable
+#'       \code{y1} or \code{y2} used in the fit).}
+#'     \item{\code{"dens1"}, \code{"dens2"}}{the marginal density
+#'       \eqn{f(t)} of equation 1 or 2 evaluated at that duration.}
+#'   }
+#'   The survival and density predictions are marginal (per equation) and
+#'   do not condition on the other equation's outcome.
 #' @export
 predict.lillardhaz <- function(object, newdata, type = "surv2", ...) {
   type <- match.arg(type, c("surv2", "surv1", "dens1", "dens2", "pr1", "xb1", "xb2"))
+  if (missing(newdata) || is.null(newdata))
+    newdata <- eval(object$call$data, parent.frame())
+  newdata <- as.data.frame(newdata)
   b <- object$coefficients
   x1 <- object$x1; x2 <- object$x2
 
